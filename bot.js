@@ -353,13 +353,9 @@ client.on('message', async (message)=>{
     .setTitle('Pomosaur commands')
     .setDescription('Here is the list of commands to use the bot!');
     COMMANDS.forEach((item, index)=>{
-      helpCommands.addField({
-        name: Object.values(CMD_LIST)[index]['description'],
-        value: Object.values(CMD_LIST)[index]['usage'],
-        isInline: true
-      });
+      helpCommands.addField(Object.values(CMD_LIST)[index]['description'], Object.values(CMD_LIST)[index]['usage'], true);
     });
-    message.author.send(helpCommands);
+    message.reply(helpCommands);
   }
 
   if(args[0] == COMMANDS[4]){
