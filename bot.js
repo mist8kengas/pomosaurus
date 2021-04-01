@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Discord = require('discord.js');
+const fs = require('fs')
 
 const client = new Discord.Client();
 
@@ -77,6 +78,10 @@ class Pomodoro {
         return;
       }
 
+      this.message.channel.send(
+        
+      )
+
       if (this.time % 2 != 0 && this.time != 7) {
         this.interval = this.workTime;
         this.alertText = `You worked for ${
@@ -102,13 +107,14 @@ class Pomodoro {
       this.timerStartedTime = new Date();
 
       if (!this.textOnly) {
-        this.dispatcher = this.connection.playFile('./sounds/time-over.ogg', {
+        this.dispatcher = this.connection.play(
+          fs.createReadStream(require('path').join(__dirname, './sounds/time-over.ogg')), {
           volume: this.volume,
         });
 
         this.dispatcher.on('end', () => {
-          this.dispatcher = this.connection.playFile(
-            './sounds/silence-fixer.ogg'
+          this.dispatcher = this.connection.play(
+            fs.createReadStream(require('path').join(__dirname, './sounds/silence-fixer.ogg'))
           );
         });
       }
@@ -278,7 +284,7 @@ client.on('message', async (message) => {
       return;
     }
 
-    message.channel.send("Pomodoro started! Let's get to work!");
+    message.channel.send("Pomodoro started! Rawr");
   }
 
   if (args[0] === COMMANDS[0]) {
@@ -287,7 +293,7 @@ client.on('message', async (message) => {
       return;
     }
 
-    if (message.member.voiceChannel) {
+    if (message.member.voice.channel) {
       let pomodoro = container.pomodoros.filter(
         (pomodoro) => pomodoro.id == message.guild.id
       );
@@ -304,7 +310,7 @@ client.on('message', async (message) => {
               parseInt(args[1] * 60000),
               parseInt(args[2] * 60000),
               parseInt(args[3] * 60000),
-              await message.member.voiceChannel.join(),
+              await message.member.voice.channel.join(),
               message.guild.id,
               message,
               false
@@ -316,7 +322,7 @@ client.on('message', async (message) => {
               1500000,
               300000,
               900000,
-              await message.member.voiceChannel.join(),
+              await message.member.voice.channel.join(),
               message.guild.id,
               message,
               false
@@ -336,7 +342,7 @@ client.on('message', async (message) => {
       );
       return;
     }
-    message.channel.send("Pomodoro started! Let's get to work!");
+    message.channel.send("Pomodoro started! Rawr!");
   }
 
   //Stop the pomodoro
@@ -351,7 +357,7 @@ client.on('message', async (message) => {
     }
 
     if (!pomodoroStop[0].textOnly) {
-      if (!message.member.voiceChannel) {
+      if (!message.member.voice.channel) {
         message.reply('You are not in a voice channel!');
         return;
       }
@@ -363,7 +369,7 @@ client.on('message', async (message) => {
     message.channel.send('Nice work! Glad I could help!');
 
     if (!pomodoroStop[0].textOnly) {
-      message.member.voiceChannel.leave();
+      message.member.voice.channel.leave();
     }
   }
 
@@ -396,9 +402,9 @@ client.on('message', async (message) => {
   }
 
   if (args[0] == COMMANDS[7]) {
-    const helpCommands = new Discord.RichEmbed()
+    const helpCommands = new Discord.MessageEmbed()
       .setColor('#f00')
-      .setTitle('Pomodore commands')
+      .setTitle('Pomosaur commands')
       .setDescription('Here is the list of commands to use the bot!');
 			[
 				{
@@ -469,7 +475,7 @@ client.on('message', async (message) => {
     }
 
     if (!pomodoro[0].textOnly) {
-      if (!message.member.voiceChannel) {
+      if (!message.member.voice.channel) {
         message.reply('You are not in a voice channel!');
         return;
       }
@@ -497,7 +503,7 @@ client.on('message', async (message) => {
       return;
     }
 
-    if (!message.member.voiceChannel) {
+    if (!message.member.voice.channel) {
       message.reply('You are not in a voice channel!');
       return;
     }
@@ -518,7 +524,7 @@ client.on('message', async (message) => {
       return;
     }
 
-    if (!message.member.voiceChannel) {
+    if (!message.member.voice.channel) {
       message.reply('You are not in a voice channel!');
       return;
     }
